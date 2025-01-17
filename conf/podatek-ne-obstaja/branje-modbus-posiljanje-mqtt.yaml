@@ -1,0 +1,39 @@
+povezave:
+  - ime: Modbus-connection
+    tip: Modbus
+    naslov: 192.168.10.106
+  - ime: MQTT-connection
+    tip: MQTT
+    naslov: localhost
+    vrata: 1883
+transformacije:
+  - ime: Branje Modbus in posiljanje MQTT
+    opis: Branje registra Modbus in posiljanje preko MQTT
+    povezave:
+      vhodne-povezave:
+        - Modbus-connection
+      izhodne-povezave:
+        - MQTT-connection
+      izhodni-format: JSON
+    izhodno-sporocilo:
+      poslji-na-temo: branje/temperatura
+      sporocilo: '
+        {
+          "data": {
+            "temperature": {
+              "pp:mapping": {
+                "path": 32010,
+                "type": "float"
+              }
+            }
+          }
+        }
+      '
+    intervalna-zahteva:
+      interval: 5000
+      zahteva:
+        modbus-funkcijska-koda: 3
+        modbus-id-naprave: 1
+        modbus-registri:
+          - naslov-registra: 32012
+            tip: float

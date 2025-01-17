@@ -1,0 +1,36 @@
+povezave:
+  - ime: MQTT-connection
+    tip: MQTT
+    naslov: localhost
+    vrata: 1883
+    ponovno-povezi: true
+  - ime: NATS-connection
+    tip: NATS
+    naslov: nats://localhost
+    vrata: 4222
+    ponovno-povezi: true
+transformacije:
+  - ime: Prejemanje NATS in posiljanje MQTT
+    opis: Prejemanje preko NATS in posiljanje preko MQTT
+    povezave:
+      vhodne-povezave:
+        - NATS-connection
+      vhodna-tema: temperatura
+      vhodni-format: XML
+      izhodne-povezave:
+        - MQTT-connection
+      izhodni-format: JSON
+    izhodno-sporocilo:
+      poslji-na-temo:  branje/temperatura
+      sporocilo: '
+        {
+          "data": {
+            "temperature": {
+              "pp:mapping": {
+                "path": "Temperature/no-value",
+                "type": "float"
+              }
+            }
+          }
+        }
+      '

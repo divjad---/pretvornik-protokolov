@@ -1,0 +1,31 @@
+povezave:
+  - ime: MQTT-connection
+    tip: MQTT
+    naslov: localhost
+    vrata: 1883
+    ponovno-povezi: true
+transformacije:
+  - ime: Prejemanje MQTT in posiljanje MQTT
+    opis: Prejemanje preko MQTT in posiljanje preko MQTT
+    povezave:
+      vhodne-povezave:
+        - MQTT-connection
+      vhodna-tema: temperatura
+      vhodni-format: XML
+      izhodne-povezave:
+        - MQTT-connection
+      izhodni-format: JSON
+    izhodno-sporocilo:
+      poslji-na-temo:  branje/temperatura
+      sporocilo: '
+        {
+          "data": {
+            "temperature": {
+              "pp:mapping": {
+                "path": "Temperature/value",
+                "type": "float"
+              }
+            }
+          }
+        }
+      '

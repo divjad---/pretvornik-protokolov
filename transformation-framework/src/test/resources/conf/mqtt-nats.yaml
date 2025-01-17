@@ -1,0 +1,96 @@
+povezave:
+  - ime: NATS-connection
+    tip: NATS
+    naslov: nats://localhost
+    vrata: 4222
+    ponovno-povezi: true
+  - ime: MQTT-connection
+    tip: MQTT
+    ssl:
+      privzeto: true
+    naslov: 37aad5450fca492297d7d3bc3329f4ba.s2.eu.hivemq.cloud
+    vrata: 8883
+    uporabnik: lpc-user
+    geslo: zv.NaiixwWZ7wCC
+registracija:
+  tema: registration
+  izhodne-povezave:
+    - NATS-connection
+  sporocilo: '{"registration": "lpc"}'
+transformacije:
+  - ime: XML Status to XML IEEE2030.5 DeviceStatus
+    opis: Example showing transformation of messages from XML to XML
+    povezave:
+      vhodne-povezave:
+        - MQTT-connection
+      vhodna-tema: status
+      vhodni-format: XML
+      izhodne-povezave:
+        - NATS-connection
+      izhodna-tema: device/status
+      izhodni-format: XML
+    izhodno-sporocilo:
+      poslji-na-temo: device/status
+      sporocilo: '
+        <DeviceStatus xmlns="http://ieee.org/2030.5">
+          <changedTime>$timestamp</changedTime>
+          <onCount>
+            <pp:mapping>
+              <path type="int">/status/count</path>
+            </pp:mapping>
+          </onCount>
+          <opState>
+             <pp:mapping>
+              <path type="int">/status/state</path>
+            </pp:mapping>
+          </opState>
+          <opTime>
+            <pp:mapping>
+              <path type="int">/status/time</path>
+            </pp:mapping>
+          </opTime>
+        </DeviceStatus>
+      '
+  - ime: XML PowerConfiguration to JSON IEEE2030.5 PowerConfiguration
+    opis: Example showing transformation of messages from XML to JSON
+    povezave:
+      vhodne-povezave:
+        - MQTT-connection2
+      vhodna-tema: power
+      vhodni-format: XML
+      izhodne-povezave:
+        - NATS-connection
+      izhodna-tema: power/configuration
+      izhodni-format: JSON
+    izhodno-sporocilo:
+      poslji-na-temo: power/configuration
+      sporocilo: '
+        {
+          "batteryInstallTime": {
+            "pp:mapping": {
+              "path": "/mypower/installTime",
+              "type": "int"
+            }
+          },
+          "lowChargeThreshold": {
+            "pp:mapping": {
+              "path": "/mypower/lowBattery",
+              "type": "int"
+            }
+          }
+        }
+      '
+
+#<status>
+#<count>3</count>
+#<state>2</state>
+#<time>1293129</time>
+#</status>
+
+#<mypower>
+#<lowBattery>100</lowBattery>
+#<installTime>1000</installTime>
+#</mypower>
+
+
+

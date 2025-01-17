@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pretvornik-protokolov
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pretvornik-protokolov
+  template:
+    metadata:
+      labels:
+        app: pretvornik-protokolov
+    spec:
+      containers:
+        - name: pretvornik-protokolov
+          image: divjad123/pretvornik-protokolov:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+          ports:
+            - containerPort: 9094
+              name: server
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /app/conf/config.yaml
+      restartPolicy: Always
+      volumes:
+        - name: config
+          hostPath:
+            path: ./config.yaml

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="kumuluzee">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %p -- %c -- %marker %m %X %ex %n"/>
+        </Console>
+
+        <RollingFile name="file_debug_app" fileName="logs/debug_app.log" filePattern="logs/debug_app.log-%d">
+            <PatternLayout pattern="%d %p -- %c -- %marker %m %X %ex %n"/>
+            <Policies>
+                <!-- Rotate every 2 days -->
+                <TimeBasedTriggeringPolicy interval="2" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </RollingFile>
+
+        <RollingFile name="file_p" fileName="logs/pp.log" filePattern="logs/pp.log-%d">
+            <PatternLayout pattern="%d %p -- %c -- %marker %m %X %ex %n"/>
+            <Policies>
+                <!-- Rotate every 2 days -->
+                <TimeBasedTriggeringPolicy interval="2" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="console" level="info"/>
+            <AppenderRef ref="file_debug_app" level="debug"/>
+        </Root>
+
+        <Logger name="si.fri.pretvornikprotokolov" level="debug">
+            <AppenderRef ref="file_pp"/>
+        </Logger>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,40 @@
+povezave:
+  - ime: NATS-connection
+    tip: NATS
+    naslov: nats://localhost
+    vrata: 4222
+    ponovno-povezi: true
+  - ime: Modbus-connection
+    tip: Modbus
+    naslo: 192.168.10.106
+transformacije:
+  - ime: Branje Modbus in posiljanje NATS
+    opis: Branje registra Modbus in posiljanje preko MQTT
+    povezave:
+      vhodne-povezave:
+        - Modbus-connection
+      izhodne-povezave:
+        - NATS-connection
+      izhodni-format: JSON
+    izhodno-sporocilo:
+      poslji-na-temo: branje/temperatura
+      sporocilo: '
+        {
+          "data": {
+            "temperature": {
+              "pp:mapping": {
+                "path": 32012,
+                "type": "float"
+              }
+            }
+          }
+        }
+      '
+    intervalna-zahteva:
+      interval: 5000
+      zahteva:
+        modbus-funkcijska-koda: 3
+        modbus-id-naprave: 1
+        modbus-registri:
+          - naslov-registra: 32012
+            tip: float

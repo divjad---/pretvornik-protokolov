@@ -1,0 +1,26 @@
+povezave:
+  - ime: NATS-connection
+    tip: NATS
+    naslov: nats://localhost
+    vrata: 4222
+    ponovno-povezi: true
+  - ime: Modbus-connection
+    tip: Modbus
+    naslov: 192.168.10.106
+tranormacije:
+  - ime: Prejemanje NATS in pisanje Modbus
+    opis: Prejemanje preko NATS in pisanje v Modbus napravo
+    povezave:
+      vhodne-povezave:
+        - Modbus-connection
+      izhodne-povezave:
+        - NATS-connection
+      izhodna-tema: pisanje/modbus
+      izhodni-format: JSON
+    vhodno-sporocilo:
+      modbus-funkcijska-koda: 6
+      modbus-id-naprave: 1
+      modbus-registri:
+        - naslov-registra: 32002
+          tip: int16
+          pot: pisanje/endianost/vrednost
